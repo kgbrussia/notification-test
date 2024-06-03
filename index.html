@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Test</title>
+</head>
+
+<body>
+    <h1>Notification Test Page</h1>
+    <button id="permissionButton">Request Notification Permission</button>
+    <button id="showNotificationButton">Show Notification</button>
+    <button id="closeNotificationButton">Close Notification</button>
+
+    <script>
+        let notification;
+
+        document.getElementById('permissionButton').addEventListener('click', function () {
+            if (typeof Notification !== 'undefined') {
+                Notification.requestPermission().then(function (result) {
+                    if (result === 'granted') {
+                        alert('Notification permission granted');
+                    } else {
+                        alert('Notification permission denied');
+                    }
+                });
+            } else {
+                alert('Notification API not supported');
+            }
+        });
+
+        document.getElementById('showNotificationButton').addEventListener('click', function () {
+            if (Notification.permission === 'granted') {
+                const options = {
+                    body: 'This is a test notification',
+                    data: {
+                        url: 'https://example.com'
+                    }
+                };
+                notification = new Notification('Test Notification', options);
+                notification.onclick = function (event) {
+                    event.preventDefault(); // Prevent the browser from focusing the Notification's tab
+                    window.open(notification.data.url, '_blank');
+                };
+            } else {
+                alert('Please grant notification permission first');
+            }
+        });
+
+        document.getElementById('closeNotificationButton').addEventListener('click', function () {
+            if (notification) {
+                notification.close();
+                alert('Notification closed');
+            } else {
+                alert('No notification to close');
+            }
+        });
+    </script>
+</body>
+
+</html>
